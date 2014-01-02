@@ -31,6 +31,8 @@ var BibType = {
 	Article: {},
 	InProceedings: {},
 	PhDThesis: {},
+	MastersThesis: {},
+	Misc: {},
 	
 	getTypeFromStr: function(str) {
 		var kk = Object.getOwnPropertyNames(BibType);
@@ -44,6 +46,22 @@ var BibType = {
 	
 	isArticle: function(type) {
 		return type == BibType.Article;
+	},
+	
+	isInProceedings: function(type) {
+		return type == BibType.InProceedings;
+	},
+	
+	isPhDThesis: function(type) {
+		return type == BibType.PhDThesis;
+	},
+	
+	isMastersThesis: function(type) {
+		return type == BibType.MastersThesis;
+	},
+	
+	isMisc: function(type) {
+		return type == BibType.Misc;
 	}
 }
 
@@ -62,9 +80,7 @@ var BibList = function() {
 		this.bibentries.push(entry);
 	};
 	this.sort = function(attr, order) {
-		if (!Array.isArray(attr)) {
-			attr = [attr];
-		}
+		attr = BibJS.Util.toArray(attr);
 		this.bibentries.sort(function(a,b) {
 			for (var i=0; i < attr.length; i++) {				
 				if (a[attr[i]] < b[attr[i]]) return order == 'DESC' ? 1 : -1
@@ -90,23 +106,88 @@ var BibJS = {
 		}, 'text');
 	},
 	
-	Render: function(biblist, htmlid) {
+	Render: function(biblist, htmlid, filter) {
 		var year = 0;
 		$.each(biblist.bibentries, function(i,entry) {
+			var html = "";
+			
+			filter = BibJS.Util.toArray(filter);
+			var toRender = false;
+			$.each(filter, function(i, attr) {
+				if (entry[attr] != undefined) {
+					toRender = true;
+				}
+			});
+			
+			if (filter.length != 0 && !toRender) {
+				return true;
+			}
+			
+			
 			if (year != entry.year) {
 				year = entry.year;
-				$(htmlid).append("<dt>"+entry.year+"</dt>");
+				html += "<dt>"+entry.year+"</dt>";
+				html += "<dd></dd>";
 			}
-			//if (BibType.isArticle(entry.type)) {
-				var html = BibJS.RenderArticle(entry);
-				$(htmlid).append(html);
-			//}
+			if (BibType.isArticle(entry.type)) {
+				html += BibJS.RenderArticle(entry);
+			}
+			else if (BibType.isInProceedings(entry.type)) {
+				html += BibJS.RenderInProceedings(entry);
+			}
+			else if (BibType.isPhDThesis(entry.type)) {
+				html += BibJS.RenderPhDThesis(entry);
+			}
+			else if (BibType.isMastersThesis(entry.type)) {
+				html += BibJS.RenderMastersThesis(entry);
+			}
+			else if (BibType.isMisc(entry.type)) {
+				html += BibJS.RenderMisc(entry);
+			}
+			
+			$(htmlid).append(html);
+			$(htmlid).append("<div style='margin-bottom: 10px;'></div>");
+			
 		});
 	},
 	
 	RenderArticle: function(entry) {
 		var html = "";
-		html += "<dd>"+entry.author+"</dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.journal+", ("+entry.year+")</dd>";
+		html += "<dd><em>"+entry.author+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.journal+"</dd>";
+		return html;
+	},
+	
+	RenderInProceedings: function(entry) {
+		var html = "";
+		html += "<dd><em>"+entry.author+"</em></dd>";
+		
+		html += "<dd><strong>"+entry.title+"</strong>";
+		if (entry.alert != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-success'>"+entry.alert+"</span></dd>";
+		}
+		else {
+			html += "</dd>";
+		}
+		html += "<dd>"+entry.booktitle+"</dd>";
+		
+		return html;
+	},
+	
+	RenderPhDThesis: function(entry) {
+		var html = "";
+		html += "<dd><em>"+entry.author+"'s PhD thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
+		return html;
+	},
+	
+	RenderMastersThesis: function(entry) {
+		var html = "";
+		html += "<dd><em>"+entry.author+"'s MSc thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
+		return html;
+	},
+	
+	RenderMisc: function(entry) {
+		var html = "";
+		html += "<dd><em>"+entry.author+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.howpublished+"</dd>";
 		return html;
 	},
 	
@@ -119,6 +200,16 @@ var BibJS = {
 		      }
 		    }
 		    return array;
+		},
+		
+		toArray: function(val) {
+			if (val == undefined || val == null) {
+				return [];
+			}
+			if (!Array.isArray(val)) {
+				val = [val];
+			}
+			return val;
 		}
 	}
 	
