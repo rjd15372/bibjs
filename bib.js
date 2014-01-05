@@ -70,7 +70,16 @@ var BibEntry = function(astentry) {
 	this.type = BibType.getTypeFromStr(astentry.type);
 	this.id = astentry.id;
 	$.each(astentry.values, function(i, kv) {
-		me[kv.key] = kv.value;
+		if (kv.key == "author") {
+			var authors = kv.value.split(" and ");
+			for (var i=0; i < authors.length; i++) {
+				authors[i] = BibJS.Util.parseAuthor(authors[i]);
+			}
+			me["authors"] = authors;
+		}
+		else {
+			me[kv.key] = kv.value;
+		}
 	});
 }
 
@@ -79,6 +88,12 @@ var BibList = function() {
 	this.addEntry = function(entry) {
 		this.bibentries.push(entry);
 	};
+	this.addAuthorLinkMap = function(map) {
+		this.authormap = map;
+	};
+	this.addMyName = function(myname) {
+		this.myname = myname;
+	}
 	this.sort = function(attr, order) {
 		attr = BibJS.Util.toArray(attr);
 		this.bibentries.sort(function(a,b) {
@@ -123,6 +138,18 @@ var BibJS = {
 				return true;
 			}
 			
+			// link authors names
+			if (entry.authors) {
+				for (var i=0; i < entry.authors.length; i++) {
+					if (biblist.authormap && biblist.authormap[entry.authors[i]]) {
+						entry.authors[i] = "<a style='color: #000;' href='"+biblist.authormap[entry.authors[i]]+"' >"+entry.authors[i]+"</a>";
+					}
+					if (biblist.myname && entry.authors[i] == biblist.myname) {
+						entry.authors[i] = "<strong>"+entry.authors[i]+"</strong>";
+					}
+				}
+			}
+			
 			
 			if (year != entry.year) {
 				year = entry.year;
@@ -153,13 +180,13 @@ var BibJS = {
 	
 	RenderArticle: function(entry) {
 		var html = "";
-		html += "<dd><em>"+entry.author+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.journal+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.journal+"</dd>";
 		return html;
 	},
 	
 	RenderInProceedings: function(entry) {
 		var html = "";
-		html += "<dd><em>"+entry.author+"</em></dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>";
 		
 		html += "<dd><strong>"+entry.title+"</strong>";
 		if (entry.alert != undefined) {
@@ -175,19 +202,19 @@ var BibJS = {
 	
 	RenderPhDThesis: function(entry) {
 		var html = "";
-		html += "<dd><em>"+entry.author+"'s PhD thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"'s PhD thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
 		return html;
 	},
 	
 	RenderMastersThesis: function(entry) {
 		var html = "";
-		html += "<dd><em>"+entry.author+"'s MSc thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"'s MSc thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
 		return html;
 	},
 	
 	RenderMisc: function(entry) {
 		var html = "";
-		html += "<dd><em>"+entry.author+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.howpublished+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.howpublished+"</dd>";
 		return html;
 	},
 	
@@ -210,6 +237,30 @@ var BibJS = {
 				val = [val];
 			}
 			return val;
+		},
+		
+		arrayToString: function(arr, sep) {
+			var i;
+			var str = "";
+			for (i=0; i < arr.length; i++) {
+				if (i > 0)
+					str += sep;
+				str += arr[i];
+			}
+			return str;
+		},
+		
+		parseAuthor: function(author) {
+			var idx = author.search(",");
+			if (idx == -1) {
+				// name already in format first ... last
+				return author;
+			}
+			else {
+				// name in format last, first ...
+				var t = author.split(",");
+				return t[1].trim()+" "+t[0].trim();
+			}
 		}
 	}
 	

@@ -40,6 +40,10 @@ myscript.js:
 $( document ).ready(function() {
 	BibJS.Init('bibtex_file.bib', function(biblist) {
 		biblist.sort(['year', 'month'], 'DESC');
+		biblist.addMyName("My Name");
+		biblist.addAuthorLinkMap({
+			"Leslie Lamport": "http://www.lamport.org/" 
+		});
 		BibJS.Render(biblist, "#bibtex_list", "selected"); // only shows selected publications
 		$('#see-all-publ').click(function() {
 			$('#bibtex_list').empty();
@@ -61,6 +65,14 @@ Example of bibtex entry:
     number  = {3},
     pages   = {342--351},
     selected = {true}
+}
+
+@inproceedings{Kawazoe08,
+  author    = {Marcos Kawazoe Aguilera and Eli Gafni and Leslie Lamport},
+  title     = {The Mailbox Problem},
+  booktitle = {DISC},
+  year      = {2008},
+  pages     = {1-15}
 }
 ```
 Filters ignore the values of tags.
