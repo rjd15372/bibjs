@@ -180,15 +180,15 @@ var BibJS = {
 	
 	RenderArticle: function(entry) {
 		var html = "";
-		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.journal+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong></dd><dd>"+entry.journal+"</dd>";
 		return html;
 	},
 	
 	RenderInProceedings: function(entry) {
 		var html = "";
 		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>";
-		
-		html += "<dd><strong>"+entry.title+"</strong>";
+
+		html += "<dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong>";
 		if (entry.alert != undefined) {
 			html += "<span style='margin-left: 10px;' class='label label-success'>"+entry.alert+"</span></dd>";
 		}
@@ -202,23 +202,30 @@ var BibJS = {
 	
 	RenderPhDThesis: function(entry) {
 		var html = "";
-		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"'s PhD thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"'s PhD thesis</em></dd><dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong></dd><dd>"+entry.school+"</dd>";
 		return html;
 	},
 	
 	RenderMastersThesis: function(entry) {
 		var html = "";
-		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"'s MSc thesis</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.school+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"'s MSc thesis</em></dd><dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong></dd><dd>"+entry.school+"</dd>";
 		return html;
 	},
 	
 	RenderMisc: function(entry) {
 		var html = "";
-		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+entry.title+"</strong></dd><dd>"+entry.howpublished+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong></dd><dd>"+entry.howpublished+"</dd>";
 		return html;
 	},
 	
 	Util: {
+        renderTitle: function(entry) {
+            var title = "";
+            if (entry.url != undefined) title = "<a href="+entry.url+">"+entry.title+"</a>";
+            else title = entry.title;
+            return title;
+        },
+
 		clean: function(array, deleteValue) {
 		    for (var i = 0; i < array.length; i++) {
 		      if (array[i] == deleteValue) {         
