@@ -1,4 +1,8 @@
 /*
+BibJS v0.1
+
+https://github.com/rjd15372/bibjs
+	 
 Copyright 2014 Ricardo J. Dias
 
 Licensed under the Apache License, Version 2.0 (the "License");
