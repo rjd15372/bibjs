@@ -1,4 +1,4 @@
-BibJS v0.1
+BibJS v0.1.1
 =====
 
 A bibtex parser and renderer to easily publish your publications in your homepage.
@@ -38,7 +38,7 @@ html file:
 myscript.js:
 ```javascript
 $( document ).ready(function() {
-	BibJS.Init('bibtex_file.bib', function(biblist) {
+	BibJS.Init('bibtex_file.bib', 'grammar_location', function(biblist) {
 		biblist.sort(['year', 'month'], 'DESC');
 		biblist.addMyName("My Name");
 		biblist.addAuthorLinkMap({

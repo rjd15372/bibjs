@@ -1,5 +1,5 @@
 /*
-BibJS v0.1
+BibJS v0.1.1
 
 https://github.com/rjd15372/bibjs
 	 
@@ -111,9 +111,9 @@ var BibList = function() {
 }
 
 var BibJS = {
-	Init: function(bibfile, finish_callback) {
+	Init: function(bibfile, pegjs_dir, finish_callback) {
 		var list = new BibList();
-		$.get('scripts/bibtex_grammar.pegjs', function(data) {
+		$.get(pegjs_dir+'/bibtex_grammar.pegjs', function(data) {
 			var parser = PEG.buildParser(data);
 			$.get(bibfile, function(data) {
 				var astentries = parser.parse(data);
