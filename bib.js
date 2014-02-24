@@ -221,7 +221,8 @@ var BibJS = {
 	Util: {
         renderTitle: function(entry) {
             var title = "";
-            if (entry.url != undefined) title = "<a href="+entry.url+">"+entry.title+"</a>";
+            if (entry.doi != undefined) title = '<a href="http://dx.doi.org/'+entry.doi+'">'+entry.title+"</a>";
+            else if (entry.url != undefined) title = '<a href="'+entry.url+'">'+entry.title+"</a>";
             else title = entry.title;
             return title;
         },
