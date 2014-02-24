@@ -1,4 +1,8 @@
 /*
+BibJS v0.1
+
+https://github.com/rjd15372/bibjs
+	 
 Copyright 2014 Ricardo J. Dias
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -221,8 +225,8 @@ var BibJS = {
 	Util: {
         renderTitle: function(entry) {
             var title = "";
-            if (entry.doi != undefined) title = '<a href="http://dx.doi.org/'+entry.doi+'">'+entry.title+"</a>";
-            else if (entry.url != undefined) title = '<a href="'+entry.url+'">'+entry.title+"</a>";
+            if (entry.doi != undefined) title = '<a style="color: #222;" href="http://dx.doi.org/'+entry.doi+'">'+entry.title+"</a>";
+            else if (entry.url != undefined) title = '<a style="color: #222;" href="'+entry.url+'">'+entry.title+"</a>";
             else title = entry.title;
             return title;
         },
