@@ -1,5 +1,5 @@
 /*
-BibJS v0.1
+BibJS v0.1.1
 
 https://github.com/rjd15372/bibjs
 	 
