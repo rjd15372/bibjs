@@ -1,4 +1,4 @@
-BibJS
+BibJS v0.1
 =====
 
 A bibtex parser and renderer to easily publish your publications in your homepage.
