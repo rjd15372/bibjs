@@ -37,6 +37,7 @@ var BibType = {
 	PhDThesis: {},
 	MastersThesis: {},
 	Misc: {},
+	InBook: {},
 	
 	getTypeFromStr: function(str) {
 		var kk = Object.getOwnPropertyNames(BibType);
@@ -66,10 +67,14 @@ var BibType = {
 	
 	isMisc: function(type) {
 		return type == BibType.Misc;
+	},
+	
+	isInBook: function(type) {
+		return type == BibType.InBook;
 	}
 }
 
-var BibEntry = function(astentry) {
+var BibEntry = function(astentry, biblist) {
 	var me = this;
 	this.type = BibType.getTypeFromStr(astentry.type);
 	this.id = astentry.id;
@@ -80,6 +85,13 @@ var BibEntry = function(astentry) {
 				authors[i] = BibJS.Util.parseAuthor(authors[i]);
 			}
 			me["authors"] = authors;
+		}
+		else if (kv.key == "crossref") {
+			var book_entry = biblist.findEntryById(kv.value);
+			me['year'] = book_entry.year;
+			me['booktitle'] = book_entry.booktitle;
+			me['publisher'] = book_entry.publisher;
+			me['editor'] = book_entry.editor;
 		}
 		else {
 			me[kv.key] = kv.value;
@@ -97,7 +109,7 @@ var BibList = function() {
 	};
 	this.addMyName = function(myname) {
 		this.myname = myname;
-	}
+	};
 	this.sort = function(attr, order) {
 		attr = BibJS.Util.toArray(attr);
 		this.bibentries.sort(function(a,b) {
@@ -107,6 +119,16 @@ var BibList = function() {
 			}
 			return 0;
 		});
+	};
+	this.findEntryById = function(entryID) {
+		var res = null;
+		$.each(this.bibentries, function(i,entry) {
+			if (entry.id == entryID) {
+				res = entry;
+				return false;
+			}
+		});
+		return res;
 	};
 }
 
@@ -118,7 +140,7 @@ var BibJS = {
 			$.get(bibfile, function(data) {
 				var astentries = parser.parse(data);
 				$.each(astentries, function(i,astentry) {
-					list.addEntry(new BibEntry(astentry));
+					list.addEntry(new BibEntry(astentry, list));
 				});
 				finish_callback(list);
 			}, 'text');
@@ -175,6 +197,9 @@ var BibJS = {
 			else if (BibType.isMisc(entry.type)) {
 				html += BibJS.RenderMisc(entry);
 			}
+			else if (BibType.isInBook(entry.type)) {
+				html += BibJS.RenderInBook(entry);
+			}
 			
 			$(htmlid).append(html);
 			$(htmlid).append("<div style='margin-bottom: 10px;'></div>");
@@ -184,7 +209,15 @@ var BibJS = {
 	
 	RenderArticle: function(entry) {
 		var html = "";
-		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd><dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong></dd><dd>"+entry.journal+"</dd>";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>"
+		html += "<dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong>"
+		if (entry.toappear != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-warning'>To Appear</span></dd>";
+		}
+		else {
+			html += "</dd>";
+		}
+		html += "<dd>"+entry.journal+"</dd>";
 		return html;
 	},
 	
@@ -195,6 +228,9 @@ var BibJS = {
 		html += "<dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong>";
 		if (entry.alert != undefined) {
 			html += "<span style='margin-left: 10px;' class='label label-success'>"+entry.alert+"</span></dd>";
+		}
+		else if (entry.toappear != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-warning'>To Appear</span></dd>";
 		}
 		else {
 			html += "</dd>";
@@ -222,12 +258,37 @@ var BibJS = {
 		return html;
 	},
 	
+	RenderInBook: function(entry) {
+		var html = "";
+		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>";
+
+		html += "<dd><strong>Book Chapter: "+BibJS.Util.renderChapterTitle(entry)+"</strong>";
+		if (entry.toappear != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-warning'>To Appear</span></dd>";
+		}
+		else {
+			html += "</dd>";
+		}
+		html += "<dd>In "+entry.booktitle+"</dd>";
+		html += "<dd>"+entry.publisher+"</dd>";
+		
+		return html;
+	},
+	
 	Util: {
         renderTitle: function(entry) {
             var title = "";
             if (entry.doi != undefined) title = '<a style="color: #222;" href="http://dx.doi.org/'+entry.doi+'">'+entry.title+"</a>";
             else if (entry.url != undefined) title = '<a style="color: #222;" href="'+entry.url+'">'+entry.title+"</a>";
             else title = entry.title;
+            return title;
+        },
+		
+        renderChapterTitle: function(entry) {
+            var title = "";
+            if (entry.doi != undefined) title = '<a style="color: #222;" href="http://dx.doi.org/'+entry.doi+'">'+entry.chapter+"</a>";
+            else if (entry.url != undefined) title = '<a style="color: #222;" href="'+entry.url+'">'+entry.chapter+"</a>";
+            else title = entry.chapter;
             return title;
         },
 
