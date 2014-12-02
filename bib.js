@@ -211,8 +211,8 @@ var BibJS = {
 		var html = "";
 		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>"
 		html += "<dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong>"
-		if (entry.toappear != undefined) {
-			html += "<span style='margin-left: 10px;' class='label label-warning'>To Appear</span></dd>";
+		if (entry.alert != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-warning'>"+entry.alert+"</span></dd>";
 		}
 		else {
 			html += "</dd>";
@@ -226,11 +226,11 @@ var BibJS = {
 		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>";
 
 		html += "<dd><strong>"+BibJS.Util.renderTitle(entry)+"</strong>";
-		if (entry.alert != undefined) {
-			html += "<span style='margin-left: 10px;' class='label label-success'>"+entry.alert+"</span></dd>";
+		if (entry.award != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-success'>"+entry.award+"</span></dd>";
 		}
-		else if (entry.toappear != undefined) {
-			html += "<span style='margin-left: 10px;' class='label label-warning'>To Appear</span></dd>";
+		else if (entry.alert != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-warning'>"+entry.alert+"</span></dd>";
 		}
 		else {
 			html += "</dd>";
@@ -263,8 +263,8 @@ var BibJS = {
 		html += "<dd><em>"+BibJS.Util.arrayToString(entry.authors, ", ")+"</em></dd>";
 
 		html += "<dd><strong>Book Chapter: "+BibJS.Util.renderChapterTitle(entry)+"</strong>";
-		if (entry.toappear != undefined) {
-			html += "<span style='margin-left: 10px;' class='label label-warning'>To Appear</span></dd>";
+		if (entry.alert != undefined) {
+			html += "<span style='margin-left: 10px;' class='label label-warning'>"+entry.alert+"</span></dd>";
 		}
 		else {
 			html += "</dd>";
