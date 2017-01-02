@@ -1,0 +1,61 @@
+.author-link {
+  color: #000;
+}
+
+.author-name {
+  font-weight: bold;
+}
+
+.pub-table {
+  border-collapse:separate;
+  border-spacing:0 10px;
+  margin: auto;
+}
+
+.year-row {
+  font-weight: bold;
+}
+
+.pub-row {
+}
+
+.author-line {
+  font-style: oblique;
+}
+
+.title-line {
+  font-weight: bold;
+}
+
+.book-title-line {
+  font-weight: bold;
+}
+
+.venue-line {
+}
+
+.title-link {
+  color: #222;
+}
+
+.label-warning {
+  background-color: #f0ad4e;
+}
+
+.label-success {
+  background-color: #5cb85c;
+}
+
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
