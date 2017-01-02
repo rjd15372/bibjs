@@ -187,7 +187,7 @@ var BibJS = {
         html += "<tr class='year-row'><td>"+entry.year+"</td>";
         html += "<td></td></tr>";
       }
-      
+
       html += "<tr class='pub-row'><td></td><td>";
       if (BibType.isArticle(entry.type)) {
         html += BibJS.RenderArticle(entry);
@@ -216,7 +216,7 @@ var BibJS = {
 
   RenderArticle: function(entry) {
     var html = "";
-    html += "<div class='author-line'" +
+    html += "<div class='author-line'>" +
             BibJS.Util.arrayToString(entry.authors, ", ") + "</div>"
     html += "<div class='title-line'>"+BibJS.Util.renderTitle(entry);
     if (entry.alert != undefined) {
@@ -270,7 +270,7 @@ var BibJS = {
     html += "<div class='author-line'>" +
             BibJS.Util.arrayToString(entry.authors, ", ") +
             "'s MSc thesis</div>";
-    
+
     html += "<div class='title-line'>" + BibJS.Util.renderTitle(entry) +
             "</div>";
 
@@ -280,7 +280,7 @@ var BibJS = {
 
   RenderMisc: function(entry) {
     var html = "";
-    html += "<div class='author-line'" +
+    html += "<div class='author-line'>" +
             BibJS.Util.arrayToString(entry.authors, ", ") + "</div>"
 
     html += "<div class='title-line'>" + BibJS.Util.renderTitle(entry) +
@@ -293,7 +293,7 @@ var BibJS = {
 
   RenderInBook: function(entry) {
     var html = "";
-    html += "<div class='author-line'" +
+    html += "<div class='author-line'>" +
             BibJS.Util.arrayToString(entry.authors, ", ") + "</div>"
 
     html += "<div class='title-line'>Book Chapter: " +
